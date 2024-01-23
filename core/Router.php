@@ -94,6 +94,6 @@ class Router
             return $data;
         }
 
-        return [ "action"=> "ErrorController@index" ];
+        return [ "action"=> "ErrorController::index" ];
     }
 }
