@@ -57,6 +57,7 @@ class Response implements iResponse
     public function json(array $data)
     {
         http_response_code($this->response_code);
+        header("Content-Type: application/json; charset=utf-8");
         echo json_encode($data);
     }
 }
