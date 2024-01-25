@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use Core\iResponse;
+use App\Models\HostModel;
 
 class HostController
 {
@@ -13,6 +14,9 @@ class HostController
 
     public function getHosts($request, iResponse $response)
     {
-        return $response->json([]);
+        $result = (new HostModel)->getHosts();
+        $status = $result["error"] ? 500 : 200;
+
+        return $response->status($status)->json($result);
     }
 }
