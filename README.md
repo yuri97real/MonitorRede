@@ -38,6 +38,8 @@ Abra o arquivo **config.php** e informe os valores necessários para conexão co
         ],
     ]);
 
+Crie o banco e as tabelas do projeto a partir do arquivo [network_monitor.sql](database/network_monitor.sql)
+
 Baixe os pacotes necessários com o composer:
 
     composer update
