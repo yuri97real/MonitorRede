@@ -6,7 +6,7 @@ define("DB_CONFIG", [
     "driver" => "mysql",
     "host" => "localhost",
     "port" => "3306",
-    "dbname" => "hosts",
+    "dbname" => "network_monitor",
     "username" => "root",
     "password" => "",
     "options" => [
