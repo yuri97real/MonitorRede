@@ -26,6 +26,8 @@ class Router
         $request_uri = rtrim($request_uri, "/");
 
         $this->request_uri = empty($request_uri) ? "/" : $request_uri;
+
+        $this->checkIfIsFile();
     }
 
     public function get(string $route, string $action)
@@ -68,6 +70,25 @@ class Router
         $params = $routeData["params"] ?? [];
 
         call_user_func([ $instance, $method ], new Request($params), new Response());
+    }
+
+    private function checkIfIsFile()
+    {
+        $filename = __DIR__."/../public{$this->request_uri}";
+        $is_file = file_exists($filename) && !is_dir($filename);
+
+        if( !$is_file ) return;
+
+        session_cache_limiter("public");
+        session_start();
+
+        $mime = mime_content_type($filename);
+        $mime = $mime == "text/plain" ? "" : $mime;
+
+        header("Content-Type: {$mime}");
+        readfile($filename);
+
+        die;
     }
 
     private function extractRouteData(array $routes)
