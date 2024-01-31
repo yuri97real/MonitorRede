@@ -5,7 +5,11 @@ use Core\Router;
 $router = new Router;
 
 $router->get("/", "HostController::index");
+
 $router->get("/hosts", "HostController::getHosts");
+$router->post("/hosts", "HostController::createHost");
+$router->put("/hosts/{host_id}", "HostController::updateHost");
+$router->delete("/hosts/{host_id}", "HostController::deleteHost");
 
 $router->get("/ping/{host}", "PingController::index");
 
