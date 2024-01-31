@@ -41,7 +41,7 @@ abstract class Model {
 
             $result = $this->pdo->prepare($query);
 
-            empty($values) ? $result->execute() : $result->execute($values);
+            empty($values) ? $result->execute() : $result->execute(array_values($values));
 
             return [
                 "data"=> !$list ? $result->fetch() : $result->fetchAll(),
