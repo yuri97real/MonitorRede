@@ -2,44 +2,60 @@
 
 namespace Core;
 
-class Request
+interface iRequest
 {
-    public $query, $params, $body;
+    public function only(array $keys);
+    public function expectsJson();
+}
+
+class Request implements iRequest
+{
+    public $query, $params, $body, $content_type;
 
     public function __construct(array $params = [])
     {
+        $this->content_type = $_SERVER["CONTENT_TYPE"] ?? "";
+        
         $this->query = (object) $_GET;
         $this->params = (object) $params;
+
         $this->body = $this->extractBodyData();
+    }
+
+    public function only(array $keys)
+    {
+        $data = [];
+
+        foreach($keys as $key)
+        {
+            if( !isset($this->body->$key) ) continue;
+            $data[$key] = $this->body->$key;
+        }
+
+        return $data;
+    }
+
+    public function expectsJson()
+    {
+        return $this->content_type === "application/json";
     }
 
     private function extractBodyData()
     {
-        $request_method = $_SERVER["REQUEST_METHOD"];
-        $content_type = $_SERVER["CONTENT_TYPE"] ?? "";
+        $body = file_get_contents("php://input");
 
-        if( $request_method == "POST" ) {
-            return (object) $_POST;
+        if( $this->content_type === "application/json" ) {
+            return json_decode($body);
         }
 
-        if( $request_method != "PUT" ) {
-            return (object) [];
-        }
-
-        $put_body = file_get_contents("php://input");
-
-        if( $content_type === "application/json" ) {
-            return json_decode($put_body);
-        }
-
-        if( $content_type === "application/x-www-form-urlencoded" ) {
-            parse_str($put_body, $output);
+        if( $this->content_type === "application/x-www-form-urlencoded" ) {
+            parse_str($body, $output);
             return (object) $output;
         }
         
-        [ $boundary ] = explode("\r\n", $put_body);
+        [ $boundary ] = explode("\r\n", $body);
 
-        $content = str_replace([ $boundary, "\r\n" ], "", $put_body);
+        $content = str_replace([ $boundary, "\r\n" ], "", $body);
         $content = trim($content, "-");
 
         $content_pieces = explode('Content-Disposition: form-data; name="', $content);
