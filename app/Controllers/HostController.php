@@ -31,7 +31,6 @@ class HostController
             "time_interval",
             "time_unit",
             "max_attempts",
-            "category_id",
         ]);
 
         $result = (new HostModel)->createHost($data);
@@ -51,7 +50,6 @@ class HostController
             "time_interval",
             "time_unit",
             "max_attempts",
-            "category_id",
         ]);
 
         $result = (new HostModel)->updateHost($host_id, $data);
